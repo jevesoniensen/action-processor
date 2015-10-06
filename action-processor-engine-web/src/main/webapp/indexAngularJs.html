@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp" ng-controller="myCtrl">
+<title>AngularJS First Application</title>
+ 
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Action Processor</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> 
+    
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">   
+	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	
+	<script src="bootstrap/bootswatch.js"></script>
+	<link rel="stylesheet" href="bootstrap/bootswatch.min.css">
+	<script src="js/Chart.js"></script>	
+</head>
+ 
+<body>
+	<div class="navbar navbar-default navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#">Action Processor</a>
+				<button type="button" class="navbar-toggle collapsed"
+					data-toggle="collapse" data-target="#bs-navbar-collapse-1">
+					<span class="sr-only">Toggle navigation</span> 
+					<span class="icon-bar"></span> 
+					<span class="icon-bar"></span> 
+					<span class="icon-bar"></span>
+				</button>
+			</div>
+
+			<div id="divMenu" class="collapse navbar-collapse">
+				<ul class="nav navbar-nav">
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12">
+				<div class="page-header">
+					<h1 id="dialogs">Action Executor Tester</h1>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-5">
+				<div class="row">
+					<div class="well bs-component">
+						<form id="formActionTest" class="form-horizontal">
+						<input type="hidden" id="actionSet" name="actionSet" value="showServer">
+							<fieldset>
+								<legend>Server Filter</legend>					
+								<div class="form-group">
+									<label for="filter" class="col-lg-4 control-label">Filter</label>
+									<div class="col-lg-6">
+										<input type="text" class="form-control" id="filter" name="filter" placeholder="Server1,...">
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-lg-6 col-lg-offset-4">
+										<button type="reset" class="btn btn-default">Cancel</button>
+										<button type="button" id="btnSend" class="btn btn-primary" ng-click="showServers()">Submit</button>
+									</div>
+								</div>
+							</fieldset>
+						</form>
+					</div>
+				</div>
+				<div class="col-lg-5">
+					<div class="row">								
+						<div class="well bs-component">
+							<table id="serversTable" class="table table-striped table-hover ">
+								<thead>
+									<tr>
+										<th>#</th>
+										<th>Server Name</th>
+									</tr>
+								</thead>
+								<tbody>								
+									<tr ng-repeat="x in rsServers.resultData.servers">
+										<td><input type="hidden" id="id" value="{{ $index + 1 }}">{{ $index + 1 }}</td>
+										<td><input class="removeRow" type="hidden" id="id" value="{{x}}">{{x}}</td></tr>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="col-lg-1">
+			</div>
+			<div class="col-lg-2">
+				<div class="row">
+					<div class="well bs-component">
+						<table id="servicesTable" class="table table-striped table-hover ">
+							<thead>
+								<tr>
+									<th>#</th>
+									<th>Services List</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="x in rsServicesPie.resultData.servicesList">
+									<td><input type="hidden" id="id" value="{{ $index + 1 }}">{{ $index + 1 }}</td>
+									<td><input class="removeRow" type="hidden" id="id" value="{{x}}">{{x}}</td></tr>
+								</tr>							
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="row">
+					<canvas id="myChart" width="200" height="200"></canvas>
+				</div>
+			</div>
+			
+			<div class="col-lg-1">
+			</div>
+			<div class="col-lg-2">
+				<div class="row">
+					<div class="well bs-component">
+						<table id="someDataTable" class="table table-striped table-hover ">
+							<thead>
+								<tr>
+									<th>#</th>
+									<th>Somethigs by - Rest Client/Server</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="x in rsSomeData.resultData.someData">
+									<td><input type="hidden" id="id" value="{{ $index + 1 }}">{{ $index + 1 }}</td>
+									<td><input class="removeRow" type="hidden" id="id" value="{{x}}">{{x}}</td></tr>
+								</tr>							
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="row">
+					<div class="well bs-component">
+						<table id="someDataTable" class="table table-striped table-hover ">
+							<thead>
+								<tr>
+									<th>#</th>
+									<th>Somethigs by - Rest Client/Server/Server</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="x in rsSomeDataRest2Srv.resultData.someData">
+									<td><input type="hidden" id="id" value="{{ $index + 1 }}">{{ $index + 1 }}</td>
+									<td><input class="removeRow" type="hidden" id="id" value="{{x}}">{{x}}</td></tr>
+								</tr>							
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+	
+    	var ctx = $("#myChart").get(0).getContext("2d");
+	   	var myNewChart = new Chart(ctx);
+	   		   	
+		var myApp = angular.module("myApp", []);
+		
+		myApp.controller('myCtrl', function ($scope, $http) {
+						
+			$scope.rest = function(){
+			    var postData = {"actionSet":"findSomeData"};
+		        $http.post("/action-processor-engine-rest/app/json/jeveson", JSON.stringify(postData)).
+		        	success(function(data, status) {
+		        		$scope.rsSomeData = data;		
+		        	});
+			};
+			
+			$scope.rest2Srv = function(){
+			    var postData = {"actionSet":"findSomeData"};
+		        $http.post("/action-processor-engine-web/app/json.json", JSON.stringify(postData)).
+		        	success(function(data, status) {
+		        		$scope.rsSomeDataRest2Srv = data;		
+		        	});
+			};
+				
+			$scope.servicesAndPie = function(){
+			    var postData = {"actionSet":"showServices"};
+		        $http.post("/action-processor-engine-web/app/json.json", JSON.stringify(postData)).
+		        	success(function(data, status) {
+				            $scope.rsServicesPie = data;
+				            myNewChart.Pie(data.resultData.pieData);
+		        		});
+			};
+			
+			$scope.showServers = function(){
+		        $http.post("/action-processor-engine-web/app/json.json", getForm()).
+		        	success(function(data, status) {
+		        		//$("#serversTable tr:gt(0)").remove();
+		        		$scope.rsServers = data;
+		        	});
+			};
+			
+			$scope.rest();
+			$scope.rest2Srv();
+			$scope.showServers();
+			$scope.servicesAndPie();
+	    });
+		
+		function getForm(){
+			return parseForm($("#formActionTest"));
+		}
+		
+		function parseForm($form){
+	        var serialized = $form.serializeArray();
+	        var s = '';
+	        var data = {};
+	        for(s in serialized){
+	            data[serialized[s]['name']] = serialized[s]['value']
+	        }
+	        return JSON.stringify(data);
+	    }
+	
+	</script>
+
+</body>
+</html>
