@@ -4,12 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.stereotype.Component;
-
 import jeveson.actionprocessor.engine.action.AbstractAction;
 import jeveson.actionprocessor.engine.action.Action;
 import jeveson.actionprocessor.engine.core.Constants;
-import jeveson.actionprocessor.engine.ws.WsControllerProxy;
+
+import org.springframework.stereotype.Component;
 
 @Component
 public class PieAction extends AbstractAction implements Action,Constants {
@@ -38,16 +37,6 @@ public class PieAction extends AbstractAction implements Action,Constants {
 		item.put("color", color);
 		item.put("highlight", highlight);
 		item.put("label", label);
-		
-		
-		WsControllerProxy wcp = new WsControllerProxy();
-		
-		try {
-			System.out.println(wcp.processAction("teste"));
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		
 		return item;
 	}

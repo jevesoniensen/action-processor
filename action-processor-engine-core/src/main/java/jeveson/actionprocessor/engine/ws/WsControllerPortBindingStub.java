@@ -7,12 +7,23 @@
 
 package jeveson.actionprocessor.engine.ws;
 
-public class WsControllerPortBindingStub extends org.apache.axis.client.Stub implements jeveson.actionprocessor.engine.ws.WsController_PortType {
+import java.util.Map;
+
+import jeveson.actionprocessor.engine.core.Constants;
+import jeveson.actionprocessor.engine.ws.WsController_PortType;
+import org.apache.axis.client.Stub;
+
+public class WsControllerPortBindingStub extends Stub implements WsController_PortType,Constants {
+	
+	private String wsControllerPort =  null; //"http://ws.engine.actionprocessor.jeveson/";
+	private Map<String,Object> conf= null;
+	
+	/*
     private java.util.Vector cachedSerClasses = new java.util.Vector();
     private java.util.Vector cachedSerQNames = new java.util.Vector();
     private java.util.Vector cachedSerFactories = new java.util.Vector();
     private java.util.Vector cachedDeserFactories = new java.util.Vector();
-
+*/
     static org.apache.axis.description.OperationDesc [] _operations;
 
     static {
@@ -36,16 +47,18 @@ public class WsControllerPortBindingStub extends org.apache.axis.client.Stub imp
 
     }
 
-    public WsControllerPortBindingStub() throws org.apache.axis.AxisFault {
-         this(null);
+    public WsControllerPortBindingStub(Map<String,Object> conf) throws org.apache.axis.AxisFault {
+         this(conf,null);
     }
 
-    public WsControllerPortBindingStub(java.net.URL endpointURL, javax.xml.rpc.Service service) throws org.apache.axis.AxisFault {
-         this(service);
+    public WsControllerPortBindingStub(Map<String,Object> conf,java.net.URL endpointURL, javax.xml.rpc.Service service) throws org.apache.axis.AxisFault {
+         this(conf,service);
          super.cachedEndpoint = endpointURL;
     }
 
-    public WsControllerPortBindingStub(javax.xml.rpc.Service service) throws org.apache.axis.AxisFault {
+    public WsControllerPortBindingStub(Map<String,Object> conf,javax.xml.rpc.Service service) throws org.apache.axis.AxisFault {
+    	this.conf = conf;
+    	this.wsControllerPort = (String)getConf().get(KEY_CTX_WS_CONTROLLER_PORT);
         if (service == null) {
             super.service = new org.apache.axis.client.Service();
         } else {
@@ -53,8 +66,17 @@ public class WsControllerPortBindingStub extends org.apache.axis.client.Stub imp
         }
         ((org.apache.axis.client.Service)super.service).setTypeMappingVersion("1.2");
     }
+    
+    public Map<String, Object> getConf() {
+		return conf;
+	}
+    
+    public void setConf(Map<String, Object> conf) {
+		this.conf = conf;
+	}
 
-    protected org.apache.axis.client.Call createCall() throws java.rmi.RemoteException {
+    @SuppressWarnings("rawtypes")
+	protected org.apache.axis.client.Call createCall() throws java.rmi.RemoteException {
         try {
             org.apache.axis.client.Call _call = super._createCall();
             if (super.maintainSessionSet) {
@@ -99,7 +121,7 @@ public class WsControllerPortBindingStub extends org.apache.axis.client.Stub imp
         _call.setProperty(org.apache.axis.client.Call.SEND_TYPE_ATTR, Boolean.FALSE);
         _call.setProperty(org.apache.axis.AxisEngine.PROP_DOMULTIREFS, Boolean.FALSE);
         _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
-        _call.setOperationName(new javax.xml.namespace.QName("http://ws.engine.actionprocessor.jeveson/", "processAction"));
+        _call.setOperationName(new javax.xml.namespace.QName(wsControllerPort, "processAction"));
 
         setRequestHeaders(_call);
         setAttachments(_call);

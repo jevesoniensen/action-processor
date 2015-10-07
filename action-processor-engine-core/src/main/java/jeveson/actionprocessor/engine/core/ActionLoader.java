@@ -52,6 +52,12 @@ public class ActionLoader implements Constants {
 				conf.put(KEY_CTX_WS_URL, env.getProperty(actionName+".url"));
 				actionInfo.setConf(conf);
 				actionInfo.setName("restWsAction");
+			}else if(actionType != null && actionType.equals("SOAP")){
+				Map<String,Object> conf= new HashMap<String, Object>();
+				conf.put(KEY_CTX_WS_URL, env.getProperty(actionName+".url"));
+				conf.put(KEY_CTX_WS_CONTROLLER_PORT, env.getProperty(actionName+".controllerPort"));
+				actionInfo.setConf(conf);
+				actionInfo.setName("soapWsAction");
 			}else{
 				actionInfo.setName(actionName);
 			}

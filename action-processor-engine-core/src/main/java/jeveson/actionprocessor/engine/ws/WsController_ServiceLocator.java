@@ -7,25 +7,52 @@
 
 package jeveson.actionprocessor.engine.ws;
 
-public class WsController_ServiceLocator extends org.apache.axis.client.Service implements jeveson.actionprocessor.engine.ws.WsController_Service {
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
 
-    public WsController_ServiceLocator() {
+import org.apache.axis.client.Service;
+
+import jeveson.actionprocessor.engine.core.Constants;
+import jeveson.actionprocessor.engine.ws.WsController_Service;
+
+import javax.xml.namespace.QName;
+
+@SuppressWarnings("serial")
+public class WsController_ServiceLocator extends Service implements WsController_Service,Constants {
+
+    // Use to get a proxy class for WsControllerPort
+    private String wsControllerPort_address = null; //"http://localhost:8080/action-processor-engine-ws/ws";
+    private String wsControllerPort = null; // "http://ws.engine.actionprocessor.jeveson/";
+    private HashSet<QName> ports = null;
+    private Map<String,Object> conf= null;
+	
+    public WsController_ServiceLocator(Map<String,Object> conf) {
+    	this.conf = conf;
+    	this.wsControllerPort_address = (String)getConf().get(KEY_CTX_WS_URL);
+    	this.wsControllerPort = (String)getConf().get(KEY_CTX_WS_CONTROLLER_PORT);
+    	
     }
 
-
+    /*
     public WsController_ServiceLocator(org.apache.axis.EngineConfiguration config) {
         super(config);
     }
 
     public WsController_ServiceLocator(java.lang.String wsdlLoc, javax.xml.namespace.QName sName) throws javax.xml.rpc.ServiceException {
         super(wsdlLoc, sName);
-    }
+    }*/
+    
+    public Map<String, Object> getConf() {
+		return conf;
+	}
+    
+    public void setConf(Map<String, Object> conf) {
+		this.conf = conf;
+	}
 
-    // Use to get a proxy class for WsControllerPort
-    private java.lang.String WsControllerPort_address = "http://localhost:8080/action-processor-engine-ws/ws";
-
-    public java.lang.String getWsControllerPortAddress() {
-        return WsControllerPort_address;
+    public String getWsControllerPortAddress() {
+        return wsControllerPort_address;
     }
 
     // The WSDD service name defaults to the port name.
@@ -42,7 +69,7 @@ public class WsController_ServiceLocator extends org.apache.axis.client.Service 
     public jeveson.actionprocessor.engine.ws.WsController_PortType getWsControllerPort() throws javax.xml.rpc.ServiceException {
        java.net.URL endpoint;
         try {
-            endpoint = new java.net.URL(WsControllerPort_address);
+            endpoint = new java.net.URL(wsControllerPort_address);
         }
         catch (java.net.MalformedURLException e) {
             throw new javax.xml.rpc.ServiceException(e);
@@ -52,7 +79,7 @@ public class WsController_ServiceLocator extends org.apache.axis.client.Service 
 
     public jeveson.actionprocessor.engine.ws.WsController_PortType getWsControllerPort(java.net.URL portAddress) throws javax.xml.rpc.ServiceException {
         try {
-            jeveson.actionprocessor.engine.ws.WsControllerPortBindingStub _stub = new jeveson.actionprocessor.engine.ws.WsControllerPortBindingStub(portAddress, this);
+            jeveson.actionprocessor.engine.ws.WsControllerPortBindingStub _stub = new jeveson.actionprocessor.engine.ws.WsControllerPortBindingStub(getConf(),portAddress, this);
             _stub.setPortName(getWsControllerPortWSDDServiceName());
             return _stub;
         }
@@ -62,7 +89,7 @@ public class WsController_ServiceLocator extends org.apache.axis.client.Service 
     }
 
     public void setWsControllerPortEndpointAddress(java.lang.String address) {
-        WsControllerPort_address = address;
+        wsControllerPort_address = address;
     }
 
     /**
@@ -70,10 +97,11 @@ public class WsController_ServiceLocator extends org.apache.axis.client.Service 
      * If this service has no port for the given interface,
      * then ServiceException is thrown.
      */
-    public java.rmi.Remote getPort(Class serviceEndpointInterface) throws javax.xml.rpc.ServiceException {
+    @SuppressWarnings("rawtypes")
+	public java.rmi.Remote getPort(Class serviceEndpointInterface) throws javax.xml.rpc.ServiceException {
         try {
             if (jeveson.actionprocessor.engine.ws.WsController_PortType.class.isAssignableFrom(serviceEndpointInterface)) {
-                jeveson.actionprocessor.engine.ws.WsControllerPortBindingStub _stub = new jeveson.actionprocessor.engine.ws.WsControllerPortBindingStub(new java.net.URL(WsControllerPort_address), this);
+                jeveson.actionprocessor.engine.ws.WsControllerPortBindingStub _stub = new jeveson.actionprocessor.engine.ws.WsControllerPortBindingStub(getConf(),new java.net.URL(wsControllerPort_address), this);
                 _stub.setPortName(getWsControllerPortWSDDServiceName());
                 return _stub;
             }
@@ -89,7 +117,7 @@ public class WsController_ServiceLocator extends org.apache.axis.client.Service 
      * If this service has no port for the given interface,
      * then ServiceException is thrown.
      */
-    public java.rmi.Remote getPort(javax.xml.namespace.QName portName, Class serviceEndpointInterface) throws javax.xml.rpc.ServiceException {
+	/*public java.rmi.Remote getPort(javax.xml.namespace.QName portName, Class serviceEndpointInterface) throws javax.xml.rpc.ServiceException {
         if (portName == null) {
             return getPort(serviceEndpointInterface);
         }
@@ -102,18 +130,16 @@ public class WsController_ServiceLocator extends org.apache.axis.client.Service 
             ((org.apache.axis.client.Stub) _stub).setPortName(portName);
             return _stub;
         }
-    }
+    }*/
 
     public javax.xml.namespace.QName getServiceName() {
-        return new javax.xml.namespace.QName("http://ws.engine.actionprocessor.jeveson/", "WsController");
+        return new javax.xml.namespace.QName(wsControllerPort, "WsController");
     }
 
-    private java.util.HashSet ports = null;
-
-    public java.util.Iterator getPorts() {
+    public Iterator<QName> getPorts() {
         if (ports == null) {
-            ports = new java.util.HashSet();
-            ports.add(new javax.xml.namespace.QName("http://ws.engine.actionprocessor.jeveson/", "WsControllerPort"));
+            ports = new HashSet<QName>();
+            ports.add(new javax.xml.namespace.QName(wsControllerPort, "WsControllerPort"));
         }
         return ports.iterator();
     }
@@ -123,11 +149,10 @@ public class WsController_ServiceLocator extends org.apache.axis.client.Service 
     */
     public void setEndpointAddress(java.lang.String portName, java.lang.String address) throws javax.xml.rpc.ServiceException {
         
-if ("WsControllerPort".equals(portName)) {
+    	if ("WsControllerPort".equals(portName)) {
             setWsControllerPortEndpointAddress(address);
         }
-        else 
-{ // Unknown Port Name
+        else { // Unknown Port Name
             throw new javax.xml.rpc.ServiceException(" Cannot set Endpoint Address for Unknown Port" + portName);
         }
     }
@@ -138,5 +163,4 @@ if ("WsControllerPort".equals(portName)) {
     public void setEndpointAddress(javax.xml.namespace.QName portName, java.lang.String address) throws javax.xml.rpc.ServiceException {
         setEndpointAddress(portName.getLocalPart(), address);
     }
-
 }

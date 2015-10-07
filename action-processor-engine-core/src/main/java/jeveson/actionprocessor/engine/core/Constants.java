@@ -12,6 +12,7 @@ public interface Constants {
     String KEY_CTX_IO_OUT_INTERFACES = "io-out-interfaces";
     String KEY_CTX_REQUEST_PARAMS = "requestParams";
     String KEY_CTX_WS_URL = "wsURL";
+    String KEY_CTX_WS_CONTROLLER_PORT = "wsControllerPort";
 	
 	String KEY_BEAN_REQUEST_ATTRIBUTES_GETTER = "requestAttributesGetter";
 	String KEY_BEAN_SESSION_ATTRIBUTES_GETTER = "sessionAttributesGetter";	

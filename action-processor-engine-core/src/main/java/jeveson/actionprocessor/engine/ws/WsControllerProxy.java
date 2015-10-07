@@ -1,21 +1,29 @@
 package jeveson.actionprocessor.engine.ws;
 
+import java.util.Map;
+import jeveson.actionprocessor.engine.ws.WsController_PortType;
+
 public class WsControllerProxy implements jeveson.actionprocessor.engine.ws.WsController_PortType {
+	
   private String _endpoint = null;
-  private jeveson.actionprocessor.engine.ws.WsController_PortType wsController_PortType = null;
+  private WsController_PortType wsController_PortType = null;
+  private Map<String,Object> conf= null;
   
-  public WsControllerProxy() {
+  public WsControllerProxy(Map<String,Object> conf) {
+	  this.conf = conf;
     _initWsControllerProxy();
   }
   
-  public WsControllerProxy(String endpoint) {
-    _endpoint = endpoint;
-    _initWsControllerProxy();
-  }
+  /*
+  public WsControllerProxy(Map<String,Object> conf,String endpoint) {
+	  this.conf = conf;
+	  _endpoint = endpoint;
+	  _initWsControllerProxy();
+  }*/
   
   private void _initWsControllerProxy() {
     try {
-      wsController_PortType = (new jeveson.actionprocessor.engine.ws.WsController_ServiceLocator()).getWsControllerPort();
+      wsController_PortType = (new jeveson.actionprocessor.engine.ws.WsController_ServiceLocator(getConf())).getWsControllerPort();
       if (wsController_PortType != null) {
         if (_endpoint != null)
           ((javax.xml.rpc.Stub)wsController_PortType)._setProperty("javax.xml.rpc.service.endpoint.address", _endpoint);
@@ -50,5 +58,12 @@ public class WsControllerProxy implements jeveson.actionprocessor.engine.ws.WsCo
     return wsController_PortType.processAction(arg0);
   }
   
+  public Map<String, Object> getConf() {
+	return conf;
+  }
+  
+  public void setConf(Map<String, Object> conf) {
+	this.conf = conf;
+  }
   
 }
