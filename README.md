@@ -9,7 +9,7 @@ It makes possible to implement webservices,web applications and batch applicatio
 In this repository you going to find a functional application with two implementations of the AbstractActionProcessor. One SpringWEB and other Javabatch.
 
 - In the Web implementation you going to see a simple angularJS exchanging json data with the server.
-local URL: http://ace4web-jevesoniensen.rhcloud.com/indexAngulaJS.html
+local URL: http://ace4web-jevesoniensen.rhcloud.com
 
 - The java batch implementation requests the same action-set of the Web, but producing and consuming java objects.
 - To test run the Main.class
