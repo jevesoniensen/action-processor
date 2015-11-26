@@ -11,6 +11,5 @@ In this repository you will find a functional application with some implementati
 - A sample implementation of this framework is deployed at http://ace4web-jevesoniensen.rhcloud.com.
 
 - The java batch implementation requests the same action-set of the Web, but producing and consuming java objects.
-- To test run the Main.class
 
 - This application was developed using eclipse, maven 3,java 7 and tomcat 8. 
