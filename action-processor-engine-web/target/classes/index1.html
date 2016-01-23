@@ -1,0 +1,240 @@
+<!DOCTYPE HTML>
+<html lang="en" ng-app="myApp">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<title>Action Processor Engine</title>
+	<link rel="stylesheet" href="bootstrap335/css/bootstrap.css">
+	<link rel="stylesheet" href="css/animation.css">	
+	<link rel="stylesheet" href="css/mycss.css">				
+</head>
+<body>
+	<!--
+		navbar-fixed-top 
+	 -->
+	
+		<div class="navbar navbar-default ">		
+		
+			<div class="navbar-header">
+		      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+		        <span class="sr-only">Toggle navigation</span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		      </button>
+		      <a class="navbar-brand" href="#/">Action Processor</a>
+		    </div>
+		
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+				<ul class="nav navbar-nav">
+		            <li><a href="#/services">Services</a></li>
+		            <li><a href="#/charts">Charts</a></li>
+		            <li><a href="#/client2Server">Rest Client to Server</a></li>
+		            <li><a href="#/client2Server2Server">Rest Client to Server to Server</a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li class="dropdown active">
+			          <a href="#/menu" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true">Menu 
+			          	<span class="caret"></span>
+			          </a>
+			          <ul class="dropdown-menu" role="menu">			            
+			            <li><a href="#/services">Services</a></li>
+			            <li class="divider"></li>
+			            <li><a href="#/charts">Charts</a></li>
+			            <li class="divider"></li>
+			            <li><a href="#/client2Server">Rest Client to Server</a></li>
+			            <li><a href="#/client2Server2Server">Rest Client to Server to Server</a></li>
+			          </ul>
+			        </li>					
+			        <li>
+						<a href="indexJquery.html">Jquery Sample <span class="sr-only">(current)</span></a>
+					</li>
+	            </ul>
+			</div>
+		</div>
+	<br />
+	<div ng-controller="centerController" class="col-xs-12 col-md-12 col-lg-12">
+			<div class="row">
+				<div class="col-xs-12 col-md-12 col-lg-12">
+					<div class="page-header">
+						<h3 id="dialogs">Action Executor Sample</h3>
+					</div>
+				</div>
+			</div>			
+			<div class="view-animate-container">
+				<div class="row">
+					<div class="col-xs-12 col-md-12 col-lg-12">		
+						  	<!-- angular templating -->
+							<!-- this is where content will be injected -->
+						  	<div ng-view class="view-animate"></div>		  
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="js/jquery-2.1.4.min.js"></script>
+	<script src="bootstrap335/js/bootstrap.js"></script>
+	<script src="js/Chart.js"></script>
+	<script src="js/urls.js"></script>
+	
+	<script src="js/angular/angular.js"></script>
+	<script src="js/angular/angular-route.js"></script>
+	<script src="js/angular/angular-animate.js"></script>
+
+	<script>
+		var ctx = null;
+		var pieData = null;
+		var app=angular.module('myApp',['ngRoute','ngAnimate']);
+						
+		var ParentCtrl = function ($scope, $http) {
+			$scope.servicesAndPie = function() {				
+				var postData = {
+					"actionSet" : "showServices"
+				};
+				
+				var pie = null;
+				console.log("servicesAndPie 1 ");
+				$http.post(urlWeb+"/app/json.json",
+						JSON.stringify(postData)).success(
+						function(data, status) {
+							console.log("servicesAndPie 2 ");
+							$scope.rsServicesPie = data;
+							callBackChart($scope,data.resultData.pieData);
+						});		
+			};
+			
+			function callBackChart($scope,data){
+				var chartObj = $("#myChart").get(0);	
+				console.log("callBackChart ");
+				if(angular.isObject(chartObj)){
+					console.log("callBackChart entrou ");
+					ctx = chartObj.getContext("2d");
+					
+					var myNewChart = new Chart(ctx);					
+					console.log("callBackChart ("+data+")");
+					myNewChart.Pie(data,{responsive : true});
+					console.log("callBackChart fim");
+				}
+			}
+			
+			$scope.rest = function() {
+				var postData = {
+					"actionSet" : "findSomeData"
+				};
+				$http.post(urlRest+"/app/json/jeveson",
+						JSON.stringify(postData)).success(
+						function(data, status) {
+							$scope.rsSomeData = data;
+						});
+			};	
+			
+			$scope.rest2Srv = function() {
+				var postData = {
+					"actionSet" : "findSomeData"
+				};
+				$http.post(urlWeb+"/app/json.json",
+						JSON.stringify(postData)).success(
+						function(data, status) {
+							$scope.rsSomeDataRest2Srv = data;
+						});
+			};
+
+			$scope.showServers = function() {
+								
+				$http.post(urlWeb+"/app/json.json",
+						getForm()).success(function(data, status) {
+					$scope.rsServers = data;
+				});
+			};
+			
+			$scope.showServers1 = function() {
+				var postData = {
+						"actionSet" : "showServer"
+					};				
+				$http.post(urlWeb+"/app/json.json",
+						JSON.stringify(postData)).success(function(data, status) {
+					$scope.rsServers = data;
+				});
+			};
+			
+			$scope.templates =
+			    [ { name: 'services.html', url: 'services.html'},
+			      { name: 'somethingsList.html', url: 'somethingsList.html'},
+			      { name: 'servicesList.html', url: 'servicesList.html'} ];
+			$scope.template = $scope.templates[0];			
+		};
+				
+		app.config(function($routeProvider){
+		      $routeProvider
+		          .when('/menu',{
+		                templateUrl: 'menupressed.html',
+		                controller  : 'menuController'
+		          })		      
+		          .when('/charts',{
+		                templateUrl: 'charts.html',
+		                controller  : 'myCtrl'
+		          })
+		          .when('/services',{
+		                templateUrl: 'services.html',
+		                controller  : 'myCtrl'
+		          }).when('/client2Server',{
+		                templateUrl: 'somethingsList.html',
+		                controller  : 'myCtrl'
+		          }).when('/client2Server2Server',{
+		                templateUrl: 'somethingsListC2S2S.html',
+		                controller  : 'myCtrl'
+		          }).otherwise({
+		                templateUrl: 'home.html',
+		                controller  : 'centerController'
+		          });
+		      
+		});
+		
+		app.controller('menuController', function($scope, $http, $injector) {
+			$injector.invoke(ParentCtrl, this, {$scope: $scope, $http: $http});
+			$scope.message = 'Choose something, Please !!!';
+	    });
+				
+		app.controller('centerController', function($scope, $http, $injector) {
+			$injector.invoke(ParentCtrl, this, {$scope: $scope, $http: $http});
+			$scope.message = 'Welcome to \'Action Processor Engine\' demonstration !';
+			$scope.rest();
+			$scope.rest2Srv();
+			$scope.showServers1();
+			$scope.servicesAndPie();
+	    });
+				
+		app.controller('rightController', function($scope, $http, $injector) {
+			$injector.invoke(ParentCtrl, this, {$scope: $scope, $http: $http});
+			$scope.servicesAndPie();
+			$scope.rest();
+			$scope.message = 'Getting the services !!!';
+	    });
+				
+		
+		app.controller('myCtrl', function($scope, $http, $injector) {
+			$injector.invoke(ParentCtrl, this, {$scope: $scope, $http: $http});			
+
+			$scope.rest();
+			$scope.rest2Srv();
+			$scope.showServers();
+			$scope.servicesAndPie();
+		});
+
+		function getForm() {
+			return parseForm($("#formActionTest"));
+		}
+
+		function parseForm($form) {
+			var serialized = $form.serializeArray();
+			var s = '';
+			var data = {};
+			for (s in serialized) {
+				data[serialized[s]['name']] = serialized[s]['value']
+			}
+			return JSON.stringify(data);
+		}
+	</script>	
+</body>
+</html>

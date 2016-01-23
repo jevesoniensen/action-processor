@@ -1,0 +1,19 @@
+<div class="well bs-component">
+	<table id="someDataTable" class="table table-striped table-hover ">
+		<thead>
+			<tr>
+				<th>#</th>
+				<th>Somethigs by - Rest Client/Server</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="x in rsSomeData.resultData.someData">
+				<td><input type="hidden" id="id" value="{{ $index + 1 }}">{{
+					$index + 1 }}</td>
+				<td><input class="removeRow" type="hidden" id="id"
+					value="{{x}}">{{x}}</td>
+			</tr>
+			</tr>
+		</tbody>
+	</table>
+</div>
