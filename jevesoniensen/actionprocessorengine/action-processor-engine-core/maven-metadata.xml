@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>jevesoniensen.actionprocessorengine</groupId>
+  <artifactId>action-processor-engine-core</artifactId>
+  <versioning>
+    <versions>
+      <version>0.0.1-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20180920203943</lastUpdated>
+  </versioning>
+</metadata>
